@@ -1,0 +1,98 @@
+<html>
+  <head>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.5.1/snap.svg-min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+    <script>
+Snap.plugin(function(Snap, Element, Paper) {
+    'use strict';
+
+    /**
+     * Rotates a given Snap.Element the given amount of degrees. The amount of
+     * degrees can be a negative or positive number, depending on which way you
+     * want to rotate the node. The rotation will be done around the central
+     * coordinates of the element.
+     *
+     * @method rotate
+     * @public
+     * @param {Integer} degrees
+     */
+    Paper.prototype.rotate = Element.prototype.rotate = function(degrees) {
+        var bbox = this.getBBox();
+
+        var matrix = new Snap.Matrix();
+        matrix.rotate(degrees, bbox.cx, bbox.cy);
+        matrix.add(this.transform().localMatrix);
+
+        this.transform(matrix);
+
+        eve('snap.rotated.' + this.id, this);
+    };
+});
+
+
+var width = 450;
+var height = width;
+var brickWidth = 80;
+var brickHeight = 185;
+var animationTime = 2000;
+var pauseTime = 1000;
+
+
+function rotateForever(brick, xc, yc) {
+  console.log("Rotating");
+
+  var bbox = brick.getBBox();
+  brick.animate({
+    //transform: 'rotate(315 '+xc+' '+yc+')j'
+    transform: 'r315 '+bbox.cx+' '+bbox.cy // + "s1,1," + bbox.cx + "," + bbox.cy 
+    }, animationTime, mina.elastic, function() {
+      brick.animate({
+      transform: 'r45 '+bbox.cx+' '+bbox.cy //+ "s1,1," + bbox.cx + "," + bbox.cy 
+    }, animationTime, mina.elastic);
+  });
+  setTimeout(rotateForever, pauseTime, brick, xc, yc);
+}
+
+$(document).ready(function(){
+  var logo = Snap.select('#logo');
+  var s = Snap("#new-logo");
+  for(var i=0; i<3; i++) {
+    for(var j=0; j<3; j++) { 
+      var xc = (width/3) + (i * width / 3);
+      var yc = (height/6) + (j * height / 3);
+      var brick= s.rect(xc, yc, brickWidth, brickHeight);
+      brick.attr({
+        fill: "#4B4B4B"
+      });
+      brick.transform('r45,'+xc+','+yc);
+      rotateForever(brick, xc + 100, yc + 400);
+    }
+  }
+
+});
+    </script>
+  </head>
+  <body>
+    <div id='logo-container'>
+      <!--
+      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+         width="499.803px" height="499.802px" viewBox="0 0 499.803 499.802" enable-background="new 0 0 499.803 499.802"
+         xml:space="preserve">
+      <g id="logo">
+          <rect x="210.256" y="157.255" transform="matrix(0.7071 0.7071 -0.7071 0.7071 250.2554 -103.6593)" fill="#4B4B4B" width="80" height="186" id="brick-1" class="brick"/>
+          <rect x="365.347" y="2.164" transform="matrix(0.7071 0.7071 -0.7071 0.7071 186.0158 -258.7515)" fill="#4B4B4B" width="80" height="185.999" id="brick-2" class="brick"/>
+          <rect x="55.164" y="312.346" transform="matrix(0.7071 0.7071 -0.7071 0.7071 314.496 51.4318)" fill="#4B4B4B" width="80" height="186.001" id="brick-3" class="brick"/>
+          <rect x="209.957" y="311.625" transform="matrix(0.7071 0.7071 -0.7071 0.7071 359.3215 -58.235)" fill="#4B4B4B" width="80" height="186" id="brick-4" class="brick"/>
+          <rect x="365.048" y="156.533" transform="matrix(0.7071 0.7071 -0.7071 0.7071 295.0822 -213.3256)" fill="#4B4B4B" width="80" height="185.999" id="brick-5" class="brick"/>
+          <rect x="55.178" y="156.847" transform="matrix(0.7071 0.7071 -0.7071 0.7071 204.5474 5.8782)" fill="#4B4B4B" width="80" height="185.999" id="brick-6" class="brick"/>
+          <rect x="365.758" y="312.758" transform="matrix(0.7071 0.7071 -0.7071 0.7071 405.7575 -168.0706)" fill="#4B4B4B" width="80" height="185.999" id="brick-7" class="brick"/>
+          <rect x="54.045" y="1.045" transform="matrix(0.7071 0.7071 -0.7071 0.7071 94.0449 -38.9547)" fill="#4B4B4B" width="80" height="185.999" id="brick-8" class="brick"/>
+          <rect x="210.27" y="1.755" transform="matrix(0.7071 0.7071 -0.7071 0.7071 140.3041 -149.2142)" fill="#4B4B4B" width="80" height="185.999" id="brick-9" class="brick"/>
+      </g>
+      </svg>
+      -->
+    </div>
+    <svg id='new-logo' width="800px" height="800px" style='border: solid 3px white;'>
+    </svg>
+  </body>
+</html>
